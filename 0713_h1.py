@@ -66,52 +66,59 @@ def compress(text):
                 temp = temp + current + str(count)
             else:
                 temp = temp + current
-    return temp
+    # if 원본이 짧다면 원본 return            
+    if len(text) > len(temp):
+        return temp
+    else:
+        return text
 
 def decompress(code):
     if is_valid_code(code):
+        # is_valid_code을 통해 code[0] = 알파벳임을 신뢰한 상태로 코드 진행
         current = code[0]
         count = ''
         temp = ''
         i = 1
+        
         while i < len(code):
-            current = code[i-1]
-            # 문자가 연속 2개인 경우 이전 문자(current)는 숫자가 없으므로 바로 표기
-            if is_alphabet(code[i]):
-                temp = temp + current
-            # 다음 인덱스가 알파벳이 아닌 숫자인 경우
-            elif not(is_alphabet(code[i])):
-                # 다음 알파벳이 오는 인덱스를 탐색
-                for j in range(i, len(code)):
-                    # 만약 해당 알파벳 인덱스를 찾았다면
-                    if is_alphabet(code[j]):
-                        # 알파벳 인덱스 사이의 숫자(형태: str)를 모두 더해줌
-                        for k in range(i, j):
-                            count = count + code[k]
-                            # 중복 방지(숫자가 1자리 이상의 경우 여러번 탐색 방지)
-                            i = j
-                        temp = temp + current*int(count)
-                        break
-            # 마지막 인덱스 예외처리(다음으로 비교할 인덱스 존재 X)
-            if i == len(code) - 1:
-                # 마지막이 알파벳인 경우
-                if is_alphabet(code[i]):
-                    temp = temp + code[i]
-                # 마지막이 숫자인 경우
+            # 현재 인덱스가 알파벳인 경우 current를 temp에 추가
+            if is_alphabet(code[i]): 
+                if count != '':
+                    temp = temp + current*int(count)
                 else:
-                    # 마지막 인덱스부터 가장 가까운 알파벳 인덱스 탐색
-                    for j in range(len(code)-1, 1, -1):
+                    temp = temp + current
+                current = code[i]
+                count = ''
+                i = i + 1
+            # 숫자인 경우 count에 대입
+            else:
+                    count = count + code[i]
+                    i = i + 1 
+                    
+            # 마지막 인덱스 예외처리
+            if i == len(code) - 1:
+                # 알파벳일 경우 temp에 추가
+                if is_alphabet(code[i]):
+                    if count != '':
+                        temp = temp + current*int(count)
+                    else:
+                        temp = temp + current
+                # 알파벳 아닐 경우
+                else:
+                    j = i - 1
+                    while j > 1:
+                        # 뒤에서 가장 가까운 알파벳 인덱스 찾아 temp 추가
                         if is_alphabet(code[j]):
+                            count = ''
                             current = code[j]
-                            # 해당 알파벳 다음 인덱스부터 숫자(형태: str) 더하기
-                            for k in range(j+1, len(code)):
+                            k = j + 1
+                            while k < len(code):
                                 count = count + code[k]
+                                k = k + 1
 
                             temp = temp + current*int(count)
                             break
-            # count 초기화
-            count = ''
-            i = i + 1
+                        j = j - 1
             
         return temp
 
