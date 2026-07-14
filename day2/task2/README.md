@@ -27,12 +27,12 @@ import matplotlib.pyplot as plt
 ex)
 
 선형 -> plot
-
-점 -> catter 사용 등
+, 점 -> catter 사용 등
 
 그래프 색상이나 굵기, 모양 등도 지정 가능하다.
-
 원하는 그래프는 [예제](https://matplotlib.org/stable/plot_types/index.html)에서 찾아 입맛에 맞게 수정해주면 된다.
+
+라이브러리 사용 자체는 쉬운 편이나 원하는 그래프 등을 출력하거나 샘플 코드를 이해하기 위해서는 수학을 잘 알아야 할 것 같다.
 
 
 
@@ -85,6 +85,7 @@ sin함수
 import matplotlib.pyplot as plt
 import numpy as np
 
+# 부드럽게 출력하기 위해 linspace 사용
 x = np.linspace(-10, 10, 500)
 y = np.sin(x)
 plt.plot(x,y)
