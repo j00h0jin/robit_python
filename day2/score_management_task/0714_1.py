@@ -38,23 +38,28 @@ def readerWriter():
     scores = []
     dict = {}
     
+    # path 존재 여부 확인 후 코드 진행
     if students_path.exists():
+        # students.csv open 및 read
         with open(students_path, newline="", encoding="utf-8") as file:
             reader = csv.reader(file)
+            # next로 첫번째 줄 넘김
             header = next(reader)
 
             for row in reader:
+                # csv 파일이 이름, 점수이므로 row[0] = name, row[1] = score
                 name = row[0]
                 if row[1].isdecimal():
                     score = int(row[1])
                     if score >= 0 and score <=100:
                         valid_score = score
                         print(name, valid_score)
+                        # rows에 저장
                         rows.append([name, valid_score])
-                    else:
+                    else: # 0 ~ 100 외
                         error = "허용 범위 초과"
                         print(error)
-                else:
+                else: # int 변환 불가능할 때
                     error = "숫자 변환 실패"
                     print(error)
     else:
@@ -64,18 +69,21 @@ def readerWriter():
         with open(clean_students_path, "w", newline="", encoding="utf-8")as file:
             writer = csv.writer(file)
 
+            # header 때 넘긴 부분을 직접 써줌
             writer.writerow(["name", "score"])
             writer.writerows(rows)
     
     else:
         print("ERROR")
-    
+        
+    # rows에서 점수만 뽑아서 scores에 저장
     for row in rows:
         scores.append(int(row[1]))
     
     mean = np.mean(scores)
     max = int(np.max(scores))
 
+    # json에 추가하기 위해 딕셔너리 형태로 저장, 학생 수(count)는 중복이 없다고 가정하고 len 사용
     for i in rows:
         dict = {"count": len(rows), "mean": mean, "max": max}
         
